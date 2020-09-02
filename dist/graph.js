@@ -1,33 +1,29 @@
-
-function swap(arr: any[], a: number, b: number) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function swap(arr, a, b) {
     let tmp = arr[a];
     arr[a] = arr[b];
     arr[b] = tmp;
     return;
 }
-
-class HeapItem<T> {
-    key: number;
-    value: T;
-    constructor(key: number, value: T) {
+class HeapItem {
+    constructor(key, value) {
         this.key = key;
         this.value = value;
     }
 }
-
-export class Heap<T> {
-    // 大顶堆
-    private arr: HeapItem<T>[] = [];
-
+class Heap {
+    constructor() {
+        // 大顶堆
+        this.arr = [];
+    }
     size() {
         return this.arr.length;
     }
-
     is_max_heap() {
         this._is_max_heap(this.arr, this.arr.length);
     }
-
-    private _is_max_heap(arr: HeapItem<T>[], length: number) {
+    _is_max_heap(arr, length) {
         if (length >= 2) {
             let maxIndex = Math.floor(length / 2 - 1); // 最后一个非叶子节点
             for (let i = 0; i <= maxIndex; i++) {
@@ -45,15 +41,12 @@ export class Heap<T> {
         }
         return true;
     }
-
-
-    push(key: number, value: T = null) {
-        let item = new HeapItem<T>(key, value);
+    push(key, value = null) {
+        let item = new HeapItem(key, value);
         this.arr.push(item);
         this.heapify_up(this.arr, this.arr.length, this.arr.length - 1);
     }
-
-    private heapify_up(arr: HeapItem<T>[], length: number, index: number) {
+    heapify_up(arr, length, index) {
         while (1) {
             let p = Math.floor((index - 1) / 2);
             if (length >= 2 && p >= 0) {
@@ -66,27 +59,24 @@ export class Heap<T> {
             break;
         }
     }
-
     top() {
         return this.arr[0];
     }
-
     pop() {
         if (this.arr.length >= 2) {
             let tmp = this.arr[0];
             this.arr[0] = this.arr.pop();
             this.heapify_down(this.arr, this.arr.length, 0);
             return tmp;
-        } else {
+        }
+        else {
             return this.arr.pop();
         }
     }
-
-    private heapify_down(arr: HeapItem<T>[], length: number, i: number) {
+    heapify_down(arr, length, i) {
         while (1) {
             let left = 2 * i + 1;
             let right = 2 * i + 2;
-
             let max = i;
             if (left <= length - 1) {
                 if (arr[max].key < arr[left].key) {
@@ -98,7 +88,6 @@ export class Heap<T> {
                     }
                 }
             }
-
             if (max != i) {
                 swap(arr, max, i);
                 i = max;
@@ -107,10 +96,9 @@ export class Heap<T> {
             break;
         }
     }
-
 }
-
-let edge_data: [number, number, number][] = [
+exports.Heap = Heap;
+let edge_data = [
     [0, 1, 10],
     [0, 5, 11],
     [1, 6, 16],
@@ -127,61 +115,49 @@ let edge_data: [number, number, number][] = [
     [5, 6, 17],
     [6, 7, 19],
 ];
-
-
-let edge_data1: [number, number, number][] = [
-    [0, 1, 3],// 0
-    [0, 2, 4],// 1
-    [1, 3, 5],// 2
-    [1, 4, 6],// 3
-    [2, 3, 8],// 4
-    [2, 5, 7],// 5
-    [3, 4, 3],// 6
-    [4, 6, 9],// 7
-    [4, 7, 4],// 8
-    [5, 7, 6],// 9
-    [6, 9, 2],// 10
-    [7, 8, 5],// 11
-    [8, 9, 3],// 12
+let edge_data1 = [
+    [0, 1, 3],
+    [0, 2, 4],
+    [1, 3, 5],
+    [1, 4, 6],
+    [2, 3, 8],
+    [2, 5, 7],
+    [3, 4, 3],
+    [4, 6, 9],
+    [4, 7, 4],
+    [5, 7, 6],
+    [6, 9, 2],
+    [7, 8, 5],
+    [8, 9, 3],
 ];
-
-let edge_data2: [number, number, number][] = [ // circle
+let edge_data2 = [
     [0, 1, 3],
     [1, 2, 4],
     [2, 3, 5],
     [3, 0, 6],
 ];
-
-
-class Edge {// 边集数组方式定义图
-    begin: number;
-    end: number;
-    weight: number;
-    constructor(begin: number, end: number, weight: number) {
+class Edge {
+    constructor(begin, end, weight) {
         this.begin = begin;
         this.end = end;
         this.weight = weight;
     }
 }
-
-export class Graph {
-    edges: Edge[] = [];
+class Graph {
     constructor() {
+        this.edges = [];
         this.init(edge_data);
     }
-
-    init(edges_data: [number, number, number][]) {
+    init(edges_data) {
         this.edges = [];
         for (const data of edges_data) {
             this.insert(data[0], data[1], data[2]);
         }
     }
-
-    private insert(begin: number, end: number, weight: number) {
+    insert(begin, end, weight) {
         this.edges.push(new Edge(begin, end, weight));
     }
-
-    private getV(): number[] {
+    getV() {
         let V = [];
         for (const e of this.edges) {
             if (V.indexOf(e.begin) == -1) {
@@ -193,23 +169,19 @@ export class Graph {
         }
         return V;
     }
-
-    private remove(arr: number[], num: number) {
+    remove(arr, num) {
         let index = arr.indexOf(num);
         if (index != -1) {
             arr.splice(index, 1);
         }
     }
-
-    private contains(arr: number[], num: number) {
+    contains(arr, num) {
         let index = arr.indexOf(num);
         return index != -1;
     }
-
-    private equal(arr1: number[], arr2: number[]) {
+    equal(arr1, arr2) {
         return arr1.length == arr2.length;
     }
-
     prim() {
         // N=(V,E) 为联通网  TE是N上的最小生成树边的集合，V为顶点的集合,E为边的集合
         // 算法从 U={u0} u0∈V 开始 TE={}开始
@@ -217,23 +189,21 @@ export class Graph {
         // e0加入TE，x且将加入U，直到U=V时候停止。 T=(U,TE)为最小生成树
         let V = this.getV();
         let X = this.getV();
-        let TE: Edge[] = [];
+        let TE = [];
         let U = [];
-
-        let first = X[0]
+        let first = X[0];
         U.push(first);
         this.remove(X, first);
-
         while (!this.equal(U, V)) {
-            let ok_edges: Edge[] = [];
+            let ok_edges = [];
             for (const e of this.edges) {
                 if (this.contains(U, e.begin) && this.contains(X, e.end)) {
                     ok_edges.push(e);
-                } else if (this.contains(U, e.end) && this.contains(X, e.begin)) {
+                }
+                else if (this.contains(U, e.end) && this.contains(X, e.begin)) {
                     ok_edges.push(e);
                 }
             }
-
             if (ok_edges.length != 0) {
                 let min_e = ok_edges[0];
                 for (const e of ok_edges) {
@@ -245,18 +215,19 @@ export class Graph {
                     TE.push(min_e);
                     U.push(min_e.end);
                     this.remove(X, min_e.end);
-                } else {
+                }
+                else {
                     TE.push(min_e);
                     U.push(min_e.begin);
                     this.remove(X, min_e.begin);
                 }
-            } else {
-                break;// 没有找到
+            }
+            else {
+                break; // 没有找到
             }
         }
         console.log(TE);
     }
-
     kruskal() {
         // http://data.biancheng.net/view/41.html
         // 1).在初始状态下给每个顶点赋予不同的标记，对于遍历过程的每条边，其都有两个顶点，
@@ -265,18 +236,15 @@ export class Graph {
         // 2).假设遍历到一条由顶点 A 和 B 构成的边，而顶点 A 和顶点 B 标记不同，
         // 此时不仅需要将顶点 A 的标记更新为顶点 B 的标记，
         // 还需要更改所有和顶点 A 标记相同的顶点的标记，全部改为顶点 B 的标记。
-
         this.edges.sort((a, b) => a.weight - b.weight);
-
         let V = this.getV();
-        let flags: { [key: number]: number } = {};
+        let flags = {};
         for (const v of V) {
             flags[v] = v;
         }
-
-        let min_tree: Edge[] = [];
+        let min_tree = [];
         for (const e of this.edges) {
-            if (flags[e.begin] != flags[e.end]) {// 标记不同
+            if (flags[e.begin] != flags[e.end]) { // 标记不同
                 min_tree.push(e);
                 let src_flag = flags[e.begin];
                 let tar_flag = flags[e.end];
@@ -289,40 +257,33 @@ export class Graph {
         }
         console.log(min_tree);
     }
-
     kruskal_optimized() {
         this.edges.sort((a, b) => a.weight - b.weight);
-
         let V = this.getV();
-
         let flags = []; //  巧妙是使用静态链表作为标记
         for (let i = 0; i < V.length; i++) {
             flags.push(0);
         }
-
-        let get_flag = (flags: number[], index: number) => {
+        let get_flag = (flags, index) => {
             while (flags[index] != 0) {
                 index = flags[index];
             }
             return index;
-        }
-
-        let min_tree: Edge[] = [];
+        };
+        let min_tree = [];
         for (const e of this.edges) {
             let begin_flag = get_flag(flags, e.begin);
             let end_flag = get_flag(flags, e.end);
-            if (begin_flag != end_flag) {// 标记不同
+            if (begin_flag != end_flag) { // 标记不同
                 min_tree.push(e);
                 flags[begin_flag] = e.end;
             }
         }
-
         console.log(min_tree);
     }
-
     get_matrix() {
         let V = this.getV();
-        let mat: number[][] = [];
+        let mat = [];
         for (let i = 0; i < V.length; i++) {
             mat[i] = [];
             for (let j = 0; j < V.length; j++) {
@@ -332,38 +293,29 @@ export class Graph {
                 }
             }
         }
-
         for (const e of this.edges) {
             mat[e.begin][e.end] = e.weight;
             mat[e.end][e.begin] = e.weight;
         }
         return mat;
     }
-
     dijkstra() {
         // 最短路径  迪科斯特拉 贪心
         // https://www.cnblogs.com/kamimxr/p/11213019.html
-
         let mat = this.get_matrix();
-
         let start = 0;
         let end = 7;
-
         let V = this.getV();
         let dis = mat[start].slice();
-
-
         let flags = [];
         for (let i = 0; i < V.length; i++) {
             flags.push(0);
         }
         flags[start] = 1;
-
         let prev = [];
         for (let i = 0; i < V.length; i++) {
             prev.push(start);
         }
-
         for (let i = 0; i < V.length; i++) {
             let min = Number.MAX_VALUE;
             let minIndex = 0;
@@ -382,39 +334,30 @@ export class Graph {
                 }
             }
         }
-
         console.log(prev);
         console.log(dis);
         console.log(dis[end]);
     }
-
     dijkstra_optimized() {
-
         let mat = this.get_matrix();
-
         let start = 0;
         let end = 7;
-
         let V = this.getV();
-        let dis: number[] = [];
+        let dis = [];
         for (let i = 0; i < V.length; i++) {
             dis.push(Number.MAX_VALUE);
         }
-
         let flags = [];
         for (let i = 0; i < V.length; i++) {
             flags.push(0);
         }
-
         let prev = [];
         for (let i = 0; i < V.length; i++) {
             prev.push(start);
         }
-
-        let heap = new Heap<number>();
+        let heap = new Heap();
         heap.push(0, start);
         dis[start] = 0;
-
         while (heap.size() > 0) {
             let top = heap.pop();
             let min = -top.key;
@@ -423,30 +366,24 @@ export class Graph {
                 continue;
             }
             flags[minIndex] = 1;
-
             for (let j = 0; j < V.length; j++) { // 换成邻接表效率更高
                 if (!flags[j] && min + mat[minIndex][j] < dis[j]) {
-                    dis[j] = min + mat[minIndex][j];// 找到了更短的路径
+                    dis[j] = min + mat[minIndex][j]; // 找到了更短的路径
                     prev[j] = minIndex;
                     heap.push(-dis[j], j);
                 }
             }
         }
-
         console.log(prev);
         console.log(dis);
         console.log(dis[end]);
     }
-
     floyd() {
         // https://www.cnblogs.com/wangyuliang/p/9216365.html
         let mat = this.get_matrix();
-
         let start = 0;
         let end = 7;
-
         let V = this.getV();
-
         for (let mid = 0; mid < V.length; mid++) {
             for (let start = 0; start < V.length; start++) {
                 for (let end = 0; end < V.length; end++) {
@@ -458,58 +395,46 @@ export class Graph {
         }
         console.log(mat[start][end]);
     }
-
-
     get_outgoingEdges() {
         let V = this.getV();
-        let outgoingEdges: Map<number, Set<number>> = new Map();
+        let outgoingEdges = new Map();
         for (const v of V) {
-            outgoingEdges.set(v, new Set<number>());
+            outgoingEdges.set(v, new Set());
         }
         for (const e of this.edges) {
             outgoingEdges.get(e.begin).add(e.end);
         }
         return outgoingEdges;
     }
-
     get_incomingEdges() {
         let V = this.getV();
-        let incomingEdges: Map<number, Set<number>> = new Map();
+        let incomingEdges = new Map();
         for (const v of V) {
-            incomingEdges.set(v, new Set<number>());
+            incomingEdges.set(v, new Set());
         }
-
         for (const e of this.edges) {
-            incomingEdges.get(e.end).add(e.begin)
+            incomingEdges.get(e.end).add(e.begin);
         }
         return incomingEdges;
     }
-
     topo() {
         this.init(edge_data1);
-
         let outgoingEdges = this.get_outgoingEdges();
         let incomingEdges = this.get_incomingEdges();
-
         let queue = [];
-
         for (const k of incomingEdges.keys()) {
             if (incomingEdges.get(k).size == 0) {
-                queue.push(k)
+                queue.push(k);
                 incomingEdges.delete(k);
                 break;
             }
         }
-
         let seq = [];
-
         while (queue.length > 0) {
-            let forRemove: number = queue.shift();
+            let forRemove = queue.shift();
             seq.push(forRemove);
-
             let outgoingEdge = outgoingEdges.get(forRemove);
             outgoingEdges.delete(forRemove);
-
             for (const outgoing of outgoingEdge) {
                 let incomingEdge = incomingEdges.get(outgoing);
                 incomingEdge.delete(forRemove);
@@ -519,17 +444,14 @@ export class Graph {
                 }
             }
         }
-
         console.log(seq);
         return seq;
     }
-
     aoe_contain_Cycle() {
         // aoe 是否存在环？
         // 给定一个顶点 是否形成环路？
         // 查看 它的出边能否到达它的入边 ，即 (它指向的顶点)是否有到达(指向它的顶点)的路径
         this.init(edge_data2);
-
         let V = this.getV();
         let outgoingEdges = this.get_outgoingEdges();
         let incomingEdges = this.get_incomingEdges();
@@ -548,12 +470,11 @@ export class Graph {
         }
         return false;
     }
-
-    aoe_has_path(start: number, end: number, outgoingEdges: Map<number, Set<number>>) {
+    aoe_has_path(start, end, outgoingEdges) {
         // 广度遍历
-        let queue: number[] = [];
+        let queue = [];
         queue.push(start);
-        let has_arrive = new Set<number>();
+        let has_arrive = new Set();
         has_arrive.add(start);
         while (queue.length > 0) {
             let top = queue.shift();
@@ -568,27 +489,22 @@ export class Graph {
                 }
             }
         }
-
         return false;
     }
-
-
     get_matrix_aoe() {
         let V = this.getV();
-        let mat: number[][] = [];
+        let mat = [];
         for (let i = 0; i < V.length; i++) {
             mat[i] = [];
             for (let j = 0; j < V.length; j++) {
                 mat[i][j] = Number.MAX_VALUE;
             }
         }
-
         for (const e of this.edges) {
             mat[e.begin][e.end] = e.weight;
         }
         return mat;
     }
-
     key_path() {
         // 顶点用来表示某个事件，弧用来表示活动，弧上的权值用来表示活动持续的时间.
         // 顶点表示事件的发生，边便是时间的过程
@@ -602,17 +518,16 @@ export class Graph {
         let outgoingEdges = this.get_outgoingEdges();
         let incomingEdges = this.get_incomingEdges();
         let topo = this.topo();
-
         let early_vertex = [];
         for (let i = 0; i < V.length; i++) {
             early_vertex[i] = 0;
         }
-
         for (const v of topo) {
             let incoms = incomingEdges.get(v);
             if (incoms.size == 0) {
                 early_vertex[v] = 0;
-            } else {
+            }
+            else {
                 let max = 0;
                 for (const incom of incoms) {
                     let weight = matrix_aoe[incom][v];
@@ -624,19 +539,17 @@ export class Graph {
                 early_vertex[v] = max;
             }
         }
-
-
         let late_vertex = [];
         for (let i = 0; i < V.length; i++) {
             late_vertex[i] = Number.MAX_VALUE;
         }
-
         for (let i = topo.length - 1; i >= 0; i--) {
             let v = topo[i];
             let outgoings = outgoingEdges.get(v);
             if (outgoings.size == 0) {
                 late_vertex[v] = early_vertex[v];
-            } else {
+            }
+            else {
                 let min = Number.MAX_VALUE;
                 for (const outgoing of outgoings) {
                     let weight = matrix_aoe[v][outgoing];
@@ -647,28 +560,23 @@ export class Graph {
                 late_vertex[v] = min;
             }
         }
-
         let keyVertex = [];
-
         for (let i = 0; i < early_vertex.length; i++) {
             if (early_vertex[i] == late_vertex[i]) {
                 keyVertex.push(i);
             }
         }
         console.log("keyVertex", keyVertex);
-
         let early_edge = [];
         for (let i = 0; i < this.edges.length; i++) {
             const e = this.edges[i];
             early_edge[i] = early_vertex[e.begin];
         }
-
         let late_edge = [];
         for (let i = 0; i < this.edges.length; i++) {
             const e = this.edges[i];
             late_edge[i] = late_vertex[e.end] - e.weight;
         }
-
         let keyPath = [];
         for (let i = 0; i < early_edge.length; i++) {
             if (early_edge[i] == late_edge[i]) {
@@ -676,13 +584,13 @@ export class Graph {
             }
         }
         console.log("keyPath", keyPath);
-
         // early_vertex <- topo
         // late_vertex <- topo + early_vertex
         // keyVertex <- early_vertex + late_vertex
-
         // early_edge <- early_vertex
         // late_edge <- late_vertex
         // keyPath <- early_edge + late_edge
     }
 }
+exports.Graph = Graph;
+//# sourceMappingURL=graph.js.map
